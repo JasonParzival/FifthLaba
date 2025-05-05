@@ -9,6 +9,9 @@ namespace FifthLaba.Objects
 {
     internal class GreenCircle : BaseObject
     {
+        private float current = 50f; // Начальный размер
+        private const float min = 1f; // Минимальный размер
+        private const float speed = 0.2f; // Скорость уменьшения
         public GreenCircle(float x, float y, float angle) : base(x, y, angle) 
         {
 
@@ -16,15 +19,31 @@ namespace FifthLaba.Objects
 
         public override void Render(Graphics g)
         {
-            g.FillEllipse(new SolidBrush(Color.Lime), -10, -10, 40, 40);
-            g.DrawEllipse(new Pen(Color.Green, 2), -10, -10, 40, 40);
+            g.FillEllipse(new SolidBrush(Color.Lime), 
+                -current / 2, -current / 2,
+                current, current
+                );
+            g.DrawEllipse(new Pen(Color.Green, 2),
+                     -current / 2, -current / 2,
+                     current, current
+                     );
         }
 
         public override GraphicsPath GetGraphicsPath()
         {
             var path = base.GetGraphicsPath();
-            path.AddEllipse(-10, -10, 40, 40);
+            path.AddEllipse(-current / 2, -current / 2, current, current);
             return path;
+        }
+
+        public void Update()
+        {
+            current = Math.Max(min, current - speed);
+        }
+
+        public bool disappear
+        {
+            get { return current <= min; }
         }
     }
 }

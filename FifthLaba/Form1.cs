@@ -23,7 +23,7 @@ namespace FifthLaba
             {
                 txtLog.Text = $"[{DateTime.Now:HH:mm:ss:ff}] Игрок пересекся с {obj}\n" + txtLog.Text;
 
-                if (obj is GreenCircle)
+                if (obj is GreenCircle circle)
                 {
                     objects.Remove(obj);
                     score += 1;
@@ -60,6 +60,22 @@ namespace FifthLaba
 
             objects.Add(greenCircle);
         }
+
+        private void updateCircle()
+        {
+            foreach (var obj in objects.ToList())
+            {
+                if (obj is GreenCircle circle)
+                {
+                    circle.Update();
+                    if (circle.disappear)
+                    {
+                        objects.Remove(circle);
+                        SpawnGreenCircle();
+                    }
+                }
+            }
+        } 
 
         private void pbMain_Paint(object sender, PaintEventArgs e)
         {
@@ -121,7 +137,8 @@ namespace FifthLaba
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            //updatePlayer(); 
+            //updatePlayer();
+            updateCircle();
 
             pbMain.Invalidate();
         }
