@@ -1,13 +1,15 @@
+using System;
 using FifthLaba.Objects;
 
 namespace FifthLaba
 {
     public partial class Form1 : Form
     {
-        //MyRectangle myRect; // создадим поле под наш пр€моугольник
         List<BaseObject> objects = new();
         Player player;
         Marker marker;
+        GreenCircle greenCircle;
+        Random random = new Random(); 
 
         public Form1()
         {
@@ -19,6 +21,12 @@ namespace FifthLaba
             player.OnOverlap += (p, obj) =>
             {
                 txtLog.Text = $"[{DateTime.Now:HH:mm:ss:ff}] »грок пересекс€ с {obj}\n" + txtLog.Text;
+
+                if (obj is GreenCircle)
+                {
+                    objects.Remove(obj);
+                    SpawnGreenCircle();
+                }
             };
 
             // добавил реакцию на пересечение с маркером
@@ -30,12 +38,22 @@ namespace FifthLaba
 
             marker = new Marker(pbMain.Width / 2 + 50, pbMain.Height / 2 + 50, 0);
 
+            // »нициализаци€ первого зеленого круга
+            SpawnGreenCircle();
 
             objects.Add(marker);
             objects.Add(player);
-            //myRect = new MyRectangle(100, 100, 45); // создать экземпл€р класса
-            objects.Add(new MyRectangle(50, 50, 0));
-            objects.Add(new MyRectangle(100, 100, 45));
+        }
+
+        // ћетод дл€ создани€ зеленого круга в случайном месте
+        private void SpawnGreenCircle()
+        {
+            greenCircle = new GreenCircle(
+                random.Next(20, pbMain.Width - 20),
+                random.Next(20, pbMain.Height - 20),
+                0);
+
+            objects.Add(greenCircle);
         }
 
         private void pbMain_Paint(object sender, PaintEventArgs e)
