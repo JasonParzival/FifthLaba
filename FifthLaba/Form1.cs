@@ -9,7 +9,8 @@ namespace FifthLaba
         Player player;
         Marker marker;
         GreenCircle greenCircle;
-        Random random = new Random(); 
+        Random random = new Random();
+        int score = 0;
 
         public Form1()
         {
@@ -25,6 +26,8 @@ namespace FifthLaba
                 if (obj is GreenCircle)
                 {
                     objects.Remove(obj);
+                    score += 1;
+                    label1.Text = "Очки: " + score;
                     SpawnGreenCircle();
                 }
             };
@@ -39,6 +42,8 @@ namespace FifthLaba
             marker = new Marker(pbMain.Width / 2 + 50, pbMain.Height / 2 + 50, 0);
 
             // Инициализация первого зеленого круга
+            SpawnGreenCircle();
+            SpawnGreenCircle();
             SpawnGreenCircle();
 
             objects.Add(marker);
