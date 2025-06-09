@@ -78,7 +78,7 @@
             Controls.Add(txtLog);
             Controls.Add(pbMain);
             Name = "Form1";
-            Text = "Form1";
+            Text = "5 лаб. работа, 4 вариант";
             ((System.ComponentModel.ISupportInitialize)pbMain).EndInit();
             ResumeLayout(false);
             PerformLayout();

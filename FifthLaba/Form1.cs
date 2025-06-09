@@ -3,6 +3,15 @@ using FifthLaba.Objects;
 
 namespace FifthLaba
 {
+    //Сделать приложение по методичке обработка событий
+    //И допилить его.Сделать в обязательном порядке оба зеленых задания и на выбор одно или несколько из 3-6 заданий.
+    //1)	Реализовать новый объект, который будет исчезать при пересечении с игроком и появляться на новом месте
+    //2)	Реализовать вывод очков.Увеличивать количество очков при пересечении с объектом добавленным в предыдущем пункте.
+    //Дополнительно добавить на поле несколько зеленых кругов.
+    //3)	Постепенно уменьшать зеленый кружок.Если размер кружка становится нулевым, то перемещать на новую позицию
+    //и задавать ему новый начальный размер.Размер хранить в зеленом кружке, событие уменьшения до нуля должен
+    //генерировать зеленый кружок
+
     public partial class Form1 : Form
     {
         List<BaseObject> objects = new();
@@ -18,12 +27,11 @@ namespace FifthLaba
 
             player = new Player(pbMain.Width / 2, pbMain.Height / 2, 0);
 
-            // добавляю реакцию на пересечение
             player.OnOverlap += (p, obj) =>
             {
                 txtLog.Text = $"[{DateTime.Now:HH:mm:ss:ff}] Игрок пересекся с {obj}\n" + txtLog.Text;
 
-                if (obj is GreenCircle circle)
+                if (obj is GreenCircle)
                 {
                     objects.Remove(obj);
                     score += 1;
@@ -32,7 +40,6 @@ namespace FifthLaba
                 }
             };
 
-            // добавил реакцию на пересечение с маркером
             player.OnMarkerOverlap += (m) =>
             {
                 objects.Remove(m);
@@ -41,7 +48,7 @@ namespace FifthLaba
 
             marker = new Marker(pbMain.Width / 2 + 50, pbMain.Height / 2 + 50, 0);
 
-            // Инициализация первого зеленого круга
+            // Инициализация первых зеленых кругов
             SpawnGreenCircle();
             SpawnGreenCircle();
             SpawnGreenCircle();
@@ -68,14 +75,14 @@ namespace FifthLaba
                 if (obj is GreenCircle circle)
                 {
                     circle.Update();
-                    if (circle.disappear)
+                    if (circle.Disappear())
                     {
                         objects.Remove(circle);
                         SpawnGreenCircle();
                     }
                 }
             }
-        } 
+        }
 
         private void pbMain_Paint(object sender, PaintEventArgs e)
         {
@@ -85,17 +92,16 @@ namespace FifthLaba
 
             updatePlayer();
 
-            // пересчитываем пересечения
             foreach (var obj in objects.ToList())
             {
                 if (obj != player && player.Overlaps(obj, g))
                 {
                     player.Overlap(obj);
-                    obj.Overlap(player);
+
+                    //obj.Overlap(player);
                 }
             }
 
-            // рендерим объекты
             foreach (var obj in objects)
             {
                 g.Transform = obj.GetTransform();
@@ -113,31 +119,21 @@ namespace FifthLaba
                 dx /= length;
                 dy /= length;
 
-                // по сути мы теперь используем вектор dx, dy
-                // как вектор ускорения, точнее даже вектор притяжения
-                // который притягивает игрока к маркеру
-                // 0.5 просто коэффициент который подобрал на глаз
-                // и который дает естественное ощущение движения
                 player.vX += dx * 0.5f;
                 player.vY += dy * 0.5f;
 
-                // расчитываем угол поворота игрока 
                 player.Angle = 90 - MathF.Atan2(player.vX, player.vY) * 180 / MathF.PI;
             }
 
-            // тормозящий момент,
-            // нужен чтобы, когда игрок достигнет маркера произошло постепенное замедление
             player.vX += -player.vX * 0.1f;
             player.vY += -player.vY * 0.1f;
 
-            // пересчет позиция игрока с помощью вектора скорости
             player.X += player.vX;
             player.Y += player.vY;
         }
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            //updatePlayer();
             updateCircle();
 
             pbMain.Invalidate();
@@ -145,14 +141,12 @@ namespace FifthLaba
 
         private void pbMain_MouseClick(object sender, MouseEventArgs e)
         {
-            // тут добавил создание маркера по клику если он еще не создан
             if (marker == null)
             {
                 marker = new Marker(0, 0, 0);
-                objects.Add(marker); // и главное не забыть пололжить в objects
+                objects.Add(marker);
             }
 
-            // а это так и остается
             marker.X = e.X;
             marker.Y = e.Y;
         }

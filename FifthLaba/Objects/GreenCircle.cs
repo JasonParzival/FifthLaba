@@ -41,9 +41,9 @@ namespace FifthLaba.Objects
             current = Math.Max(min, current - speed);
         }
 
-        public bool disappear
+        public bool Disappear()
         {
-            get { return current <= min; }
+            return current <= min;
         }
     }
 }

@@ -18,7 +18,6 @@ namespace FifthLaba.Objects
 
         public override void Render(Graphics g)
         {
-            // и запихиваем туда код из формы
             g.FillEllipse(
                 new SolidBrush(Color.DeepSkyBlue), 
                 -15, -15, 
